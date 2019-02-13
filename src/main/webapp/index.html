@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<input id="text" type="text" />
+<button onclick="send()"> 发送消息 </button>
+<button   onclick="closeWebSocket()"> 关闭连接 </button>
+<div id="message">   </div>
+
+<script type="text/javascript">
+
+    if('WebSocket' in window){
+        var host = window.location.host;
+        var websocket = new WebSocket("ws://"+host+"/websocket");
+    }else{
+        alert('浏览器不支持websocket')
+    }
+
+    websocket.onerror = function(){
+        alert("连接出错");
+    };
+
+    websocket.onopen = function(event){
+        alert("连接成功");
+    }
+
+
+    websocket.onmessage = function(event){
+        document.getElementById('message').innerHTML += event.data + "<hr>";
+    }
+
+    websocket.onclose = function(){
+        alert("连接关闭");
+    }
+
+    window.onbeforeunload = function(){
+        websocket.close();
+    }
+
+
+    function closeWebSocket(){
+        websocket.close();
+    }
+
+    function send(){
+        var message = document.getElementById('text').value;
+        websocket.send(message);
+    }
+</script>
+
+</body>
+</html>
+
+
+
